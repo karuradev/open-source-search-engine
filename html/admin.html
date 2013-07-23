@@ -31,7 +31,13 @@ Developer documentation is <a href=/developer.html>here</a>.
 <a href=#build>Building an Index</a> - how to start building your index<br><br>
 <a href=#spider>The Spider</a> - all about Gigabot, Gigablast's crawling agent<br><br>
 <a href=#quotas>Document Quotas</a> - how to limit documents into the index<br><br>
-<a href=#injecting>Injecting Documents</a> - inserting documents directly into Gigablast<br><br><a href=#deleting>Deleting Documents</a> - removing documents from the index<br><br><a href=#scoring>Scoring a Document</a> - how Gigablast scores a document and how to control it<br><br><a href=#metas>Indexing User-Defined Meta Tags</a> - how Gigablast indexes user-defined meta tags<br><br><a href=#bigdocs>Indexing Big Documents</a> - what controls the maximum size of a document that can be indexed?<br><br><a href=#langs>Indexing Different Languages</a> - how Gigablast indexes different languages<br><br><a href=#rolling>Rolling the New Index</a> - merging the realtime files into the base file<br><br><a href=#catdb>Building a DMOZ Based Directory</a> - using catdb to build a web directory based on open DMOZ data<br><br>
+<a href=#injecting>Injecting Documents</a> - inserting documents directly into Gigablast<br><br><a href=#deleting>Deleting Documents</a> - removing documents from the index
+
+<br><br><a href=#metas>Indexing User-Defined Meta Tags</a> - how Gigablast indexes user-defined meta tags
+
+<br><br><a href=#bigdocs>Indexing Big Documents</a> - what controls the maximum size of a document that can be indexed?
+
+<br><br><a href=#rolling>Rolling the New Index</a> - merging the realtime files into the base file<br><br><a href=#catdb>Building a DMOZ Based Directory</a> - using catdb to build a web directory based on open DMOZ data<br><br>
 
 <a href=#optimizing>Optimizing</a> - optimizing Gigablast's spider and query performance<br><br>
 <a href=#logs>The Log System</a> - how Gigablast logs information<br><br><a href=#config>gb.conf</a> - describes the gb configuration file<br><br><a href=#hosts>Hosts.conf</a> - the file that describes all participating hosts in the network<br><br>
@@ -142,11 +148,11 @@ Populate each directory with the following files and subdirectories:<br><br>
 <dd>
 <table cellpadding=3>
 <tr><td><b>gb</b></td><td>The Gigablast executable. Contains the web server, the database and the spider. This file is required to run gb.</td></tr>
-<tr><td><b><a href=#hosts>hosts.conf</a></b></td><td>This file describes each host (gb process) in the Gigablast network. Every gb process uses the same hosts.conf file. This file is required to run gb.<tr><td><b><a href=#config>gb.conf</a></b></td><td>Each gb process is called a <i>host</i> and each gb process has its own gb.conf file. This file is required to run gb.<tr><td><b>coll.XXX.YYY/</b></td><td>For every collection there is a subdirectory of this form, where XXX is the name of the collection and YYY is the collection's unique id. Contained in each of these subdirectories is the data associated with that collection.</td></tr><tr><td><b>coll.XXX.YYY/coll.conf</b></td><td>Each collection contains a configuration file called coll.conf. This file allows you to configure collection specific parameters. Every parameter in this file is also controllable via your the administrative web pages as well.</td></tr><tr><td><b>trash/</b></td><td>Deleted collections are moved into this subdirectory. A timestamp in milliseconds since the epoch is appended to the name of the deleted collection's subdirectory after it is moved into the trash sub directory. Gigablast doesn't physically delete collections in case it was a mistake.</td></tr><tr><td><b><a href=#ruleset>tagdbN.xml</a></b></td><td>Several files where N is an integer. The files must be contiguous, starting with an N of 0. Each one of these files is a <a href=#ruleset>ruleset</a> file. This file is required for indexing and deleting documents.</tr>
+<tr><td><b><a href=#hosts>hosts.conf</a></b></td><td>This file describes each host (gb process) in the Gigablast network. Every gb process uses the same hosts.conf file. This file is required to run gb.<tr><td><b><a href=#config>gb.conf</a></b></td><td>Each gb process is called a <i>host</i> and each gb process has its own gb.conf file. This file is required to run gb.<tr><td><b>coll.XXX.YYY/</b></td><td>For every collection there is a subdirectory of this form, where XXX is the name of the collection and YYY is the collection's unique id. Contained in each of these subdirectories is the data associated with that collection.</td></tr><tr><td><b>coll.XXX.YYY/coll.conf</b></td><td>Each collection contains a configuration file called coll.conf. This file allows you to configure collection specific parameters. Every parameter in this file is also controllable via your the administrative web pages as well.</td></tr><tr><td><b>trash/</b></td><td>Deleted collections are moved into this subdirectory. A timestamp in milliseconds since the epoch is appended to the name of the deleted collection's subdirectory after it is moved into the trash sub directory. Gigablast doesn't physically delete collections in case it was a mistake.</td></tr>
+
 <tr><td><b>html/</b></td><td>A subdirectory that holds all the html files and images used by Gigablast. Includes Logos and help files.</tr>
-<tr><td><b>dict/</b></td><td>A subdirectory that holds files used by the spell checker and the GigaBits generator. Each file in dict/ holds all the words and phrases starting with a particular letter. The words and phrases in each file are sorted by a popularity score.</tr>
 <tr><td><b>antiword</b></td><td>Executable called by gbfilter to convert Microsoft Word files to html for indexing.</tr>
-<tr><td><b>.antiword/</b></td><td>A subdirectory that contains information needed by antiword.</tr>
+<tr><td><b>antiword-dir/</b></td><td>A subdirectory that contains information needed by antiword.</tr>
 <tr><td><b>pdftohtml</b></td><td>Executable called by gbfilter to convert PDF files to html for indexing.</tr>
 <tr><td><b>pstotext</b></td><td>Executable called by gbfilter to convert PostScript files to text for indexing.</tr>
 <tr><td><b>ppthtml</b></td><td>Executable called by gbfilter to convert PowerPoint files to html for indexing.</tr>
@@ -456,255 +462,6 @@ You can delete documents from the index two ways:<ul>
 
 
 
-<a name="scoring"></a>
-<table cellpadding=1 border=0 width=100% bgcolor=#0079ba>
-<tr><td><center><b><font color=#ffffff size=+1>Scoring A Document</font></a>
-</td></tr></table>
-<br><br>
-Gigablast scores word and phrases in a document based on the following criteria:<br>
-<ul>
-<li>the <b>quality</b> of the document<li>the <b>count</b> of the word or phrase in the document<li>the <b>locations</b> of the word or phrase in the document<li>the <b>spaminess</b> of the word or phrase in the document<li>the <b>length</b> of the part of the document being indexed</ul>
-<br>
-By assigning a <a href="#ruleset">ruleset</a> to a document, you can control exactly how Gigablast uses these criteria to generate the score of a word or phrase in that document.<br><br>
-<br>
-<b>Index Rules</b></center>
-<br>
-When Gigablast indexes a document it first chains down the <a href="#indexblock">&lt;index&gt; tags</a> that are listed in the ruleset in the order they are presented. Each of these &lt;index&gt; tags, and all that it contains, represents one <b><font color=red>index rule</font></b>. Each index rule describes how to index a portion of the document. Different portions of the document may be indexed and scored in different ways. The order of these index rules can be very important, since the same word's score accumulates from one index rule to the next, and different index rules may have different score ceilings for that word.<br><br>
-In addition to describing the various sub tags of an index rule in the <a href="#indexingsection">sample ruleset file</a>, they are further described in the following table:<br><br><br>
-<b>Sub Tags of an Index Rule</b></center>
-<br>
-<table cellpadding=4>
-<tr>
-<td bgcolor=#eeeeee>
-<a ref="#indexname">&lt;name&gt;</a>X&lt;/&gt;</td>
-<td bgcolor=#eeeeee>This tag tells Gigablast what part of the document to index. You can have multiple &lt;name&gt; tags in the same index rule. <i>X</i> can be one of the following values:<br><br>
-<table cellpadding=1>
-<tr><td><i>ABSENT</i></td><td>If the &lt;name&gt; tag is not present Gigablast will restrict itself to all words and phrases in the document that are not in between a &lt; and &gt; of any tag in the document.</td></tr>
-<tr><td>title</td><td>Tells Gigablast to index the words and phrases in between the first pair of &lt;title&gt; and &lt;/title&gt; tags present in the document, if one exists.</td></tr>
-<tr><td>meta.keywords</td><td>Tells Gigablast to index the words and phrases contained in the content field of the &lt;meta name=keywords content=X&gt; tag.</td></tr><tr><td>meta.keyword</td><td> See above</td></tr><tr><td>meta.summary</td><td> See above</td></tr><tr><td>meta.description</td><td> See above</td></tr><tr><td>meta.foobar</td><td>COMING SOON (user-defined meta tags)</td></tr><tr><td>foobar</td><td>You can add your own tag, like <i>&lt;foobar&gt;index this&lt;/&gt;</i> to the document and then have an index rule with a &lt;name&gt;foobar&lt;/&gt; that contains rules on how to index it.</td></tr>
-</table>
-</td>
-</tr>
-<tr>
-<td>
-&lt;prefix&gt;X&lt;/&gt;</td>
-<td>
-If present, Gigablast will index the words and phrases with the specified prefix, <i>X</i>. Fielded searches can then be performed. Example: &lt;prefix&gt;title&lt;/&gt;</td>
-</tr>
-<tr>
-<td bgcolor=#eeeeee>
-&lt;maxQualityForSpamDetect&gt;X&lt;/&gt;</td>
-<td bgcolor=#eeeeee>
-Spam detection will be performed on the words and phrases if the document's quality is <i>X</i> or lower. Spam detection generally lowers the scores of repeated words and phrases based on the degree of repetition.</td>
-</tr>
-<tr>
-<td>
-&lt;minQualityToIndex&gt;X&lt;/&gt;</td>
-<td>
-If the document's quality is below <i>X</i>, then do not index the words and phrases for this index rule.</td>
-</tr>
-<tr>
-<td bgcolor=#eeeeee>
-&lt;filterHtmlEntities&gt;X&lt;/&gt;</td>
-<td bgcolor=#eeeeee>
-If <i>X</i> is <i>yes</i> then convert HTML entities, like &AMP;gt;, into their represented characters before indexing.</td>
-</tr>
-<tr>
-<td>
-&lt;indexIfUniqueOnly&gt;X&lt;/&gt;</td>
-<td>
-If <i>X</i> is <i>yes</i> then each word or phrase will only be indexed if not already indexed by a previous index rule in the ruleset, and only the first occurence of the word or phrase will be indexed, subsequent occurences will not count towards the score.</td>
-</tr>
-<tr>
-<td bgcolor=#eeeeee>
-&lt;indexSingletons&gt;X&lt;/&gt;</td>
-<td bgcolor=#eeeeee>
-If <i>X</i> is <i>yes</i> then index the words, otherwise do not.</td>
-</tr>
-<tr>
-<td>
-&lt;indexPhrases&gt;X&lt;/&gt;</td>
-<td>
-If <i>X</i> is <i>yes</i> then index the phrases, otherwise do not.</td>
-</tr>
-<tr>
-<td bgcolor=#eeeeee>
-&lt;indexAsWhole&gt;X&lt;/&gt;</td>
-<td bgcolor=#eeeeee>
-If <i>X</i> is <i>yes</i> then index the whole sequence of indexable words as a checksum.</td>
-</tr>
-<tr>
-<td>
-&lt;useStopWords&gt;X&lt;/&gt;</td>
-<td>
-If <i>X</i> is <i>yes</i> then use <a href="#stopwords">stop words</a> when forming phrases.</td>
-</tr>
-<tr>
-<td bgcolor=#eeeeee>
-&lt;useStems&gt;X&lt;/&gt;</td>
-<td bgcolor=#eeeeee>
-If <i>X</i> is <i>yes</i> then index stems. Currently unsupported.</td>
-</tr>
-<tr>
-<td>
-&lt;quality11&gt;  X1 &lt;/&gt;<br>
-&lt;quality12&gt;  X2 &lt;/&gt;...<br>
-&lt;quality1N&gt;  XN &lt;/&gt;<br>
-&lt;maxLen11&gt;   Y1 &lt;/&gt;<br>
-&lt;maxLen12&gt;   Y2 &lt;/&gt;...<br>
-&lt;maxLen1N&gt;   YN &lt;/&gt;<br>
-</td>
-<td>
-This maps the quality of the document to a maximum number of CHARACTERS to index. <a name="mapdesc"></a><b>The (Xn,Yn) points form a piecewise function which is linearly interpolated between points. The edges are horizontal, meaning, if X is 0 Y will be Y1, or if X is infinite, Y will be YN.</b>
-</td>
-</tr>
-<tr>
-<td bgcolor=#eeeeee>
-<a name="v1"></a>
-&lt;quality21&gt;  X1 &lt;/&gt;<br>
-&lt;quality22&gt;  X2 &lt;/&gt;...<br>
-&lt;quality2N&gt;  XN &lt;/&gt;<br>
-&lt;maxScore21&gt; Y1 &lt;/&gt;<br>
-&lt;maxScore22&gt; Y2 &lt;/&gt;...<br>
-&lt;maxScore2N&gt; YN &lt;/&gt;<br>
-</td>
-<td bgcolor=#eeeeee>
-This maps the quality of the document to a percentage of the absolute max score a word or phrase can have. This is the QUALITY_WEIGHT_MAX value in the <a href="#formula">formula</a>.</td>
-</tr>
-<tr>
-<td>
-<a name="v2"></a>
-&lt;quality31&gt;  X1 &lt;/&gt;<br>
-&lt;quality32&gt;  X2 &lt;/&gt;...<br>
-&lt;quality3N&gt;  XN &lt;/&gt;<br>
-&lt;scoreWeight31&gt; Y1 &lt;/&gt;<br>
-&lt;scoreWeight32&gt; Y2 &lt;/&gt;...<br>
-&lt;scoreWeight3N&gt; YN &lt;/&gt;<br>
-</td>
-<td>
-This maps the quality of the document to a percentage weight on the base score of the words and phrases being indexed. This is the QUALITY_WEIGHT value in the <a href="#formula">formula</a>.</td>
-</tr>
-<tr>
-<td bgcolor=#eeeeee>
-<a name="v3"></a>
-&lt;len41&gt;  X1 &lt;/&gt;<br>
-&lt;len42&gt;  X2 &lt;/&gt;...<br>
-&lt;len4N&gt;  XN &lt;/&gt;<br>
-&lt;scoreWeight41&gt; Y1 &lt;/&gt;<br>
-&lt;scoreWeight42&gt; Y2 &lt;/&gt;...<br>
-&lt;scoreWeight4N&gt; YN &lt;/&gt;<br>
-</td>
-<td bgcolor=#eeeeee>
-This maps the length (in characters) of the what is being indexed to a percentage weight on the base score of the words and phrases being indexed. This is the LENGTH_WEIGHT value in the <a href="#formula">formula</a>.</td>
-</tr>
-<tr>
-<td>
-<a name="v4"></a>
-&lt;len51&gt;  X1 &lt;/&gt;<br>
-&lt;len52&gt;  X2 &lt;/&gt;...<br>
-&lt;len5N&gt;  XN &lt;/&gt;<br>
-&lt;maxScore51&gt; Y1 &lt;/&gt;<br>
-&lt;maxScore52&gt; Y2 &lt;/&gt;...<br>
-&lt;maxScore5N&gt; YN &lt;/&gt;<br>
-</td>
-<td>
-This maps the length (in characters) of the what is being indexed to a percentage of the absolute maximum score a word or phrase can have. This is the LENGTH_WEIGHT_MAX value in the <a href="#formula">formula</a>.</td>
-</tr>
-</table>
-<a name="formula"></>
-<br><br>
-<b>Computing the Score</b>
-<br><br>
-Each word in the document is assigned a base score with this formula : <br>
-<pre>
-BASE_SCORE = min { (256          * QUALITY_WEIGHT     * LENGTH_WEIGHT     ) / 10000 + BOOST ,
-                   (0xffffffffLL * QUALITY_WEIGHT_MAX * LENGTH_WEIGHT_MAX ) / 10000         }
-</pre>
-<br>
-See above table for descriptions of these variables. The BOOST is 256 if the page links to gigablast.com or has a submission for to gigablast.com, but if not, the BOOST is 0.<br>
-<br>
-After the base score is computed, it is multiplied by the number of occurences of the word or phrase in the portion of the document being indexed as specified by the index rule. This score may then be reduced if spam detection occurred and the word or phrase was deemed repetitious. Spam detection is triggered when the quality of the document is at or below the value specified in the &lt;minQualityForSpamDetect&gt; tag in the index rule. Finally, the score is mapped into an 8 bit value, from 1 to 255, and stored in the index.<br><br>
-To see the scoring algorithm in action you can use the <b><a href="/master/parser">Parser Tool</a></b>. It will show each indexed word and phrase and its associated score, as well as some attributes associated with the indexed document.<br>
-<br>
-<br>
-<b>Indexing Document Attributes</b>
-<br>
-<br>
-Attributes which describe the document are often indexed but are deemed too simple to require their own index rule. This includes indexing portions of the url in various ways and indexing the content type of the document, as the table below illustrates.<br><br>
-<table cellpadding=4>
-<tr>
-<td><b>Item</b></td>
-<td><b>Ruleset Tag</b></td>
-<td><b>Desription</b></td>
-</tr>
-<td bgcolor=#eeeeee>
-&lt;meta name=foo content=bar&gt;</td>
-<td bgcolor=#eeeeee>
---</td>
-<td bgcolor=#eeeeee>
-User-defined meta tags use the quality of the document multiplied by 256 as their score. If this product is 0 it is upped to 1. This score is then mapped to an 8-bit final score an indexed. Furthermore, when indexing user-defined meta tags, only one occurence of each word or phrase is counted. In the future, these meta tags may have their own index rule.</td>
-</tr>
-<tr>
-<td>
-http://www.xxx.com/abc</td>
-<td>
-&lt;indexUrl&gt;X&lt;/&gt;</td>
-<td>If X is <i>yes</i> then the entire url is indexed as one word with a BASE_SCORE of 1 and with a url: prefix so a search for <i>url:http://www.xxx.com/</i> will bring up the document.</td>
-</tr>
-<tr>
-<td bgcolor=#eeeeee>
-http://www.xxx.com/abc</td>
-<td bgcolor=#eeeeee>
-&lt;indexSubUrl&gt;X&lt;/&gt;</td>
-<td bgcolor=#eeeeee>If X is <i>yes</i> then the url is indexed as if it occured in the document, but with a random BASE_SCORE (based on url hash) and a suburl: prefix so a search for <i>suburl:"com/abc"</i> will bring up the document.</td>
-</tr>
-<tr>
-<td>
-http://www.xxx.com/abc</td>
-<td>
-&lt;indexIp&gt;X&lt;/&gt;</td>
-<td>If X is <i>yes</i> then the IP of the url will be indexed as if it were one word but with a random BASE_SCORE (based on url hash). Furthermore, the last number of the IP address is replaced with a zero and that IP address is indexed in order to provide an IP domain search ability. So if a url has the IP address 1.2.3.4 then a search for ip:1.2.3.4 or for ip:1.2.3 should bring it up.</td>
-</tr>
-<tr>
-<td bgcolor=#eeeeee>
-http://www.xxx.com/abc?q=hi</td>
-<td bgcolor=#eeeeee>
-&lt;indexSite&gt;X&lt;/&gt;</td>
-<td bgcolor=#eeeeee>If X is <i>yes</i> then the following terms would be indexed with a base score of BASE_SCORE (but multiplied by 3 if the url is a root url): <ul>
-<li>site:www.xxx.com/abc?q=hi<li>site:www.xxx.com/abc?<li>site:www.xxx.com/<li>site:xxx.com/abc?q=hi<li>site:xxx.com/abc?<li>site:xxx.com/</ul>
-</td>
-</tr>
-<tr>
-<td bgcolor=#eeeeee>
-http://www.xxx.com/form.php</td>
-<td bgcolor=#eeeeee>
-&lt;indexExt&gt;X&lt;/&gt;</td>
-<td bgcolor=#eeeeee>If X is <i>yes</i> then the file extension, if any, of the url would be indexed with the ext: prefix and a score of BASE_SCORE. So a query of ext:php would bring up the document in this example case.</td>
-</tr>
-<tr>
-<td>
-links</td>
-<td>
-&lt;indexLinks&gt;X&lt;/&gt;</td>
-<td>If X is <i>yes</i> then the various links in the document will be indexed with a link: prefix. Scores are special in this case.</td>
-</tr>
-<tr>
-<td bgcolor=#eeeeee>
-collection name</td>
-<td bgcolor=#eeeeee>
---</td>
-<td bgcolor=#eeeeee>The collection name of the document is indexed with the coll: prefix and a BASE_SCORE of 1. </td>
-</tr>
-<tr>
-<td>
-content type</td>
-<td>
---</td>
-<td>The content type of the document is indexed with the type: (or filetype:) prefix and a BASE_SCORE of 1.  If the content type is not one of these supported content types, then nothing will be indexed: <ul>
-<li>html<li>text<li>xml<li>pdf<li>doc<li>xls<li>ppt<li>ps</ul>
-</td>
-</tr>
-</table>
 <br>
 <br>
 <a name=metas></a>
@@ -734,24 +491,6 @@ You can also check all the tags in the gb.conf file that have the word "mem" in 
 After ensuring you have enough extra memory to handle the document size, you will need to make sure the document fits into the tree that is used to hold the documents in memory before they get dumped to disk. The documents are compressed using zlib before being added to the tree so you might expect a 5:1 compression for a typical web page. The memory used to hold document in this tree is controllable from the <b>&lt;titledbMaxTreeMem&gt;</b> parameter in the gb.conf file. Make sure that is big enough to hold the document you would like to add. If the tree could accomodate the big document, but at the time is partially full, Gigablast will automatically dump the tree to disk and keep trying to add the big document.<br>
 <br>
 Finally, you need to ensure that the <b>max text doc len</b> and <b>max other doc len</b> controls on the <b>Spider Controls</b> page are set to accomodating sizes. Use -1 to indicate no maximum. <i>Other</i> documents are non-text and non-html documents, like PDF, for example. These controls will physically prohibit the spider from downloading more than this many bytes. This causes excessively long documents to be truncated. If the spider is downloading a PDF that gets truncated then it abandons it, because truncated PDFs are useless.<br>
-<br>
-<br>
-<a name=langs></a>
-<table cellpadding=1 border=0 width=100% bgcolor=#0079ba>
-<tr><td><center><b><font color=#ffffff size=+1>Indexing Different Languages</td></tr></table>
-<br>
-Gigablast currently just supports indexing the ISO-8859-1 (aka Latin-1) character set. This character set uses one byte (8 bits) per character. It covers most West European languages such as French, Spanish, Catalan, Galician, Basque, Portuguese, Italian, Albanian, Afrikaans, Dutch, German, Danish, Swedish, Norwegian, Finnish, Faroese, Icelandic, Irish, Scottish and English.<br><br>Gigablast has a switch in the Spider Controls for enabling and disabling the indexing of Asian character sets. If the spider is downloading a document and Asian character sets are disallowed, then it will check for the Content-Encoding field in the mime of the HTTP reply from the web server. If the name of the character set is one of the Asian character sets that Gigablast recognizes, then the document will NOT be indexed. This control covers some of the more popular characters sets in Asia, but if the character set is not recognized by Gigablast it will be indexed as if it were the Latin-1 character set. Likewise, all search queries are interpreted as belonging to the Latin-1 character set.<br><br>If Gigablast indexes a document as being from the Latin-1 character set when in fact it is not, then Gigablast will parse out words as being sequences of alpha-numeric characters. All other characters are considered to be punctuation. The alpha-numeric characters are defined as a-z, A-Z, 0-9 and all of the letters with accent marks (192-255, except 215 and 247). Everything else is considered a punctuation character. <br><br>Gigablast also has a #define that controls whether or not it will convert accented letters into their unaccented equivalents. When accent conversion is active, a word like <i>r&egrave;sume</i> is indexed the same as the word <i>resume</i>. Accent conversion is on by default.<br><br>In the future Gigablast may support many different character sets. This involves translating the text of a particular character set into Unicode, however, before this translation can be performed, the character set must be recognized by Gigablast. In most cases the web servers and the web browsers do a good job of providing the character set name in the HTTP reply or HTTP request by supplying a Content-Encoding field in the mime, however, when this is not supplied, Gigablast must make a best effort to auto-detect it. Once the character set is determined, and the translation to Unicode has been performed, the content can be parsed into "words",  basic units of meaning, inherent to that particular language.<br><br>The following table describes the Latin-1 character set:<br><pre><B>Char   Decimal    Hex     Entity      Char    Decimal   Hex    Entity
-                         Reference                            Reference</b>
-NUL       0        0                  SOH        1        1
-STX       2        2                  ETX        3        3
-EOT       4        4                  ENQ        5        5
-ACK       6        6                  BEL        7        7
-BS        8        8                   HT        9        9
-NL       10        a                   VT       11        b
-NP       12        c                   CR       13        d
-SO       14        e                   SI       15        f
-DLE      16       10                  DC1       17       11
-DC2      18       12                  DC3       19       13DC4      20       14                  NAK       21       15SYN      22       16                  ETB       23       17CAN      24       18                   EM       25       19SUB      26       1a                  ESC       27       1bFS       28       1c                   GS       29       1dRS       30       1e                   US       31       1fSP       32       20                    !       33       21"        34       22     &amp;quot;         #       35       23$        36       24                    %       37       25&amp;        38       26      &amp;amp;         '       39       27(        40       28                    )       41       29*        42       2a                    +       43       2b,        44       2c                    -       45       2d.        46       2e                    /       47       2f0        48       30                    1       49       312        50       32                    3       51       334        52       34                    5       53       356        54       36                    7       55       378        56       38                    9       57       39:        58       3a                    ;       59       3b&lt;        60       3c       &amp;lt;         =       61       3d&gt;        62       3e       &amp;gt;         ?       63       3f@        64       40                    A       65       41B        66       42                    C       67       43D        68       44                    E       69       45F        70       46                    G       71       47H        72       48                    I       73       49J        74       4a                    K       75       4bL        76       4c                    M       77       4dN        78       4e                    O       79       4fP        80       50                    Q       81       51R        82       52                    S       83       53T        84       54                    U       85       55V        86       56                    W       87       57X        88       58                    Y       89       59Z        90       5a                    [       91       5b\        92       5c                    ]       93       5d^        94       5e                    _       95       5f`        96       60                    a       97       61b        98       62                    c       99       63d       100       64                    e       101       65f       102       66                    g       103       67h       104       68                    i       105       69j       106       6a                    k       107       6bl       108       6c                    m       109       6dn       110       6e                    o       111       6fp       112       70                    q       113       71r       114       72                    s       115       73t       116       74                    u       117       75v       118       76                    w       119       77x       120       78                    y       121       79z       122       7a                    {       123       7b|       124       7c                    }       125       7d~       126       7e                  DEL       127       7f--      128       80                   --       129       81--      130       82                   --       131       83--      132       84                   --       133       85--      134       86                   --       135       87--      136       88                   --       137       89--      138       8a                   --       139       8b--      140       8c                   --       141       8d--      142       8e                   --       143       8f--      144       90                   --       145       91--      146       92                   --       147       93--      148       94                   --       149       95--      150       96                   --       151       97--      152       98                   --       153       99--      154       9a                   --       155       9b--      156       9c                   --       157       9d--      158       9e                   --       159       9f        160       a0     <em>&amp;nbsp;</em>         ¡       161       a1     <em>&amp;iexcl;</em>¢       162       a2     <em>&amp;cent;</em>         £       163       a3     <em>&amp;pound;</em>¤       164       a4     <em>&amp;curren;</em>       ¥       165       a5     <em>&amp;yen;</em>¦       166       a6     <em>&amp;brvbar;</em>       §       167       a7     <em>&amp;sect;</em>¨       168       a8     <em>&amp;uml;</em>          ©       169       a9     <em>&amp;copy;</em>ª       170       aa     <em>&amp;ordf;</em>         «       171       ab     <em>&amp;laquo;</em>¬       172       ac     <em>&amp;not;</em>          ­       173       ad     <em>&amp;shy;</em>®       174       ae     <em>&amp;reg;</em>          ¯       175       af     <em>&amp;macr;</em>°       176       b0     <em>&amp;deg;</em>          ±       177       b1     <em>&amp;plusmn;</em>²       178       b2     <em>&amp;sup2;</em>         ³       179       b3     <em>&amp;sup3;</em>´       180       b4     <em>&amp;acute;</em>        µ       181       b5     <em>&amp;micro;</em>¶       182       b6     <em>&amp;para;</em>         ·       183       b7     <em>&amp;middot;</em>¸       184       b8     <em>&amp;cedil;</em>        ¹       185       b9     <em>&amp;sup1;</em>º       186       ba     <em>&amp;ordm;</em>         »       187       bb     <em>&amp;raquo;</em>¼       188       bc     <em>&amp;frac14;</em>       ½       189       bd     <em>&amp;frac12;</em>¾       190       be     <em>&amp;frac34;</em>       ¿       191       bf     <em>&amp;iquest;</em>À       192       c0       &amp;Agrave;     Á       193       c1       &amp;Aacute;Â       194       c2       &amp;Acirc;      Ã       195       c3       &amp;Atilde;Ä       196       c4       &amp;Auml;       Å       197       c5       &amp;Aring;Æ       198       c6       &amp;AElig;      Ç       199       c7       &amp;Ccedil;È       200       c8       &amp;Egrave;     É       201       c9       &amp;Eacute;Ê       202       ca       &amp;Ecirc;      Ë       203       cb       &amp;Euml;Ì       204       cc       &amp;Igrave;     Í       205       cd       &amp;Iacute;Î       206       ce       &amp;Icirc;      Ï       207       cf       &amp;Iuml;Ð       208       d0     <em>&amp;ETH;</em>          Ñ       209       d1       &amp;Ntilde;Ò       210       d2       &amp;Ograve;     Ó       211       d3       &amp;Oacute;Ô       212       d4       &amp;Ocirc;      Õ       213       d5       &amp;Otilde;Ö       214       d6       &amp;Ouml;       ×       215       d7     <em>&amp;times;</em>Ø       216       d8       &amp;Oslash;     Ù       217       d9       &amp;Ugrave;Ú       218       da       &amp;Uacute;     Û       219       db       &amp;Ucirc;Ü       220       dc       &amp;Uuml;       Ý       221       dd       &amp;Yacute;Þ       222       de       &amp;THORN;      ß       223       df       &amp;szlig;à       224       e0       &amp;agrave;     á       225       e1       &amp;aacute;â       226       e2       &amp;acirc;      ã       227       e3       &amp;atilde;ä       228       e4       &amp;auml;       å       229       e5       &amp;aring;æ       230       e6       &amp;aelig;      ç       231       e7       &amp;ccedil;è       232       e8       &amp;egrave;     é       233       e9       &amp;eacute;ê       234       ea       &amp;ecirc;      ë       235       eb       &amp;euml;ì       236       ec       &amp;igrave;     í       237       ed       &amp;iacute;î       238       ee       &amp;icirc;      ï       239       ef       &amp;iuml;ð       240       f0       &amp;eth;        ñ       241       f1       &amp;ntilde;ò       242       f2       &amp;ograve;     ó       243       f3       &amp;oacute;ô       244       f4       &amp;ocirc;      õ       245       f5       &amp;otilde;ö       246       f6       &amp;ouml;       ÷       247       f7     <em>&amp;divide;</em>ø       248       f8       &amp;oslash;     ù       249       f9       &amp;ugrave;ú       250       fa       &amp;uacute;     û       251       fb       &amp;ucirc;ü       252       fc       &amp;uuml;       ý       253       fd       &amp;yacute;þ       254       fe       &amp;thorn;      ÿ       255       ff       &amp;yuml;</pre><br>
 <br>
 <br>
 <a name=rolling></a>

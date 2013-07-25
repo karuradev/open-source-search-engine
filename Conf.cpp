@@ -215,7 +215,15 @@ void Conf::setRootIps ( ) {
 	//m_numDns = 16;
 	//for ( long i = 0; i < m_numDns; i++ )
 	//	m_dnsPorts[i] = 53;
-	m_numDns = 0;
+	//m_numDns = 0;
+
+	// set m_numDns based on Conf::m_dnsIps[] array
+	long i; for ( i = 0; i < 16 ; i++ ) {
+		m_dnsPorts[i] = 53;
+		if ( ! g_conf.m_dnsIps[i] ) break;
+	}
+	m_numDns = i;
+
 
 	// hardcode google for now...
 	//m_dnsIps[0] = atoip("8.8.8.8",7);
@@ -226,7 +234,9 @@ void Conf::setRootIps ( ) {
 	//char *ipStr = "10.5.56.78"; // gk268 now on roadrunner
 	//char *ipStr = "10.5.56.77"; // gk267 now cnsp-routed bind9 server
 	// now sp1 for speed (quad processor)
-	char *ipStr = "10.5.66.11";
+	//char *ipStr = "10.5.66.11";
+	// fail back to google public dns
+	char *ipStr = "8.8.8.8";
 	// try google first dibs. NO! they are unresponsive after a while
 	//char *ipStr = "8.8.4.4";
 	// for some reason scproxy2 local bind9 not responding to us!!! fix!
@@ -236,8 +246,11 @@ void Conf::setRootIps ( ) {
 	if ( h->m_type & HT_PROXY ) ipStr = "8.8.8.8"; 
 	// if we are a proxy, notably a spider compression proxy...
 	//if ( g_proxy.isProxy() ) ipStr = "127.0.0.1";
-	m_dnsIps[0] = atoip( ipStr , gbstrlen(ipStr) );
-	m_numDns = 1;
+	if ( m_numDns == 0 ) {
+		m_dnsIps[0] = atoip( ipStr , gbstrlen(ipStr) );
+		m_dnsPorts[0] = 53;
+		m_numDns = 1;
+	}
 
 
 	// default this to off on startup for now until it works better

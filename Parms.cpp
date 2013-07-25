@@ -6003,17 +6003,17 @@ void Parms::init ( ) {
 	m++;
 	*/
 
-	/*
-	m->m_title = "primary dns";
+	m->m_title = "dns 0";
 	m->m_desc  = "IP address of the primary DNS server. Assumes UDP "
 		"port 53.";
 	m->m_cgi   = "pdns";
 	m->m_off   = (char *)&g_conf.m_dnsIps[0] - g;
 	m->m_type  = TYPE_IP;
-	m->m_def   = "192.168.1.1";
+	// default to google public dns #1
+	m->m_def   = "8.8.8.8";
 	m++;
 
-	m->m_title = "secondary dns";
+	m->m_title = "dns 1";
 	m->m_desc  = "IP address of the secondary DNS server. Assumes UDP "
 	"port 53. Will be accessed in conjunction with the primary "
 	"dns, so make sure this is always up. An ip of 0 means "
@@ -6021,11 +6021,12 @@ void Parms::init ( ) {
 	m->m_cgi   = "sdns";
 	m->m_off   = (char *)&g_conf.m_dnsIps[1] - g;
 	m->m_type  = TYPE_IP;
-	m->m_def   = "0";
+	// default to google public dns #2
+	m->m_def   = "8.8.4.4";
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 2";
+	m->m_title = "dns 2";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsa";
 	m->m_off   = (char *)&g_conf.m_dnsIps[2] - g;
@@ -6034,7 +6035,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 3";
+	m->m_title = "dns 3";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsb";
 	m->m_off   = (char *)&g_conf.m_dnsIps[3] - g;
@@ -6043,7 +6044,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 4";
+	m->m_title = "dns 4";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsc";
 	m->m_off   = (char *)&g_conf.m_dnsIps[4] - g;
@@ -6052,7 +6053,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 5";
+	m->m_title = "dns 5";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsd";
 	m->m_off   = (char *)&g_conf.m_dnsIps[5] - g;
@@ -6061,7 +6062,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 6";
+	m->m_title = "dns 6";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnse";
 	m->m_off   = (char *)&g_conf.m_dnsIps[6] - g;
@@ -6070,7 +6071,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 7";
+	m->m_title = "dns 7";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsf";
 	m->m_off   = (char *)&g_conf.m_dnsIps[7] - g;
@@ -6079,7 +6080,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 8";
+	m->m_title = "dns 8";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsg";
 	m->m_off   = (char *)&g_conf.m_dnsIps[8] - g;
@@ -6088,7 +6089,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 9";
+	m->m_title = "dns 9";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsh";
 	m->m_off   = (char *)&g_conf.m_dnsIps[9] - g;
@@ -6097,7 +6098,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 10";
+	m->m_title = "dns 10";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsi";
 	m->m_off   = (char *)&g_conf.m_dnsIps[10] - g;
@@ -6106,7 +6107,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 11";
+	m->m_title = "dns 11";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsj";
 	m->m_off   = (char *)&g_conf.m_dnsIps[11] - g;
@@ -6115,7 +6116,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 12";
+	m->m_title = "dns 12";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsk";
 	m->m_off   = (char *)&g_conf.m_dnsIps[12] - g;
@@ -6124,7 +6125,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 13";
+	m->m_title = "dns 13";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsl";
 	m->m_off   = (char *)&g_conf.m_dnsIps[13] - g;
@@ -6133,7 +6134,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 14";
+	m->m_title = "dns 14";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsm";
 	m->m_off   = (char *)&g_conf.m_dnsIps[14] - g;
@@ -6142,7 +6143,7 @@ void Parms::init ( ) {
 	m->m_group = 0;
 	m++;
 
-	m->m_title = "secondary dns 15";
+	m->m_title = "dns 15";
 	m->m_desc  = "";
 	m->m_cgi   = "sdnsn";
 	m->m_off   = (char *)&g_conf.m_dnsIps[15] - g;
@@ -6150,7 +6151,6 @@ void Parms::init ( ) {
 	m->m_def   = "0";
 	m->m_group = 0;
 	m++;
-	*/
 
 
 	m->m_title = "geocoder IP #1";

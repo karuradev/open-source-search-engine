@@ -12,7 +12,7 @@ void *dlsym(void *ptr, const char *str) {return (void *)0;}
 int dlclose(void *ptr) {return 0;}
 char *dlerror() {return (void *)0;}
 void *dlmopen(Lmid_t a, const char *str, int x) {return (void *)0;}
-//int dladdr(void *ptr1, Dl_info *ptr2);// {return 0;}
+int dladdr(const void *ptr1, Dl_info *ptr2) {return 0;}
 int dldump(const char *str1, const char *str2, int x) {return 0;}
 int dlinfo(void *ptr1, int x, void *ptr2) {return 0;}
 

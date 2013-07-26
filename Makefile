@@ -15,8 +15,10 @@ CPPFLAGS = -g -Wall -pipe -Wno-write-strings -Wstrict-aliasing=0 -Wno-unused-but
 # use this for valgrind
 #LIBS= $(LIBFILES)
 
-# sputnik (apt-get install libplot-dev openssl-dev)
-LIBS= -lplotter ./libstdc++.a ./libgcc.a ./libc.a ./libz.a -lssl -lcrypto ./libiconv.a ./libm.a
+# let's keep the libraries in the repo for easier bug reporting and debugging
+# in general if we can. the includes are still in /usr/include/ however...
+# which is kinda strange but seems to work so far.
+LIBS= -lplotter ./libstdc++.a ./libgcc.a ./libc.a ./libz.a ./libssl.a ./libcrypto.a ./libiconv.a ./libm.a
 
 OBJS =  Tfndb.o UdpSlot.o \
 	Msg13.o Mime.o IndexReadInfo.o \

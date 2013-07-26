@@ -566,21 +566,42 @@ bool HashTableX::save ( char *dir ,
 	long numSlots     = m_numSlots;
 	long numSlotsUsed = m_numSlotsUsed;
 	long off = 0;
-	pwrite ( fd,  &numSlots     , 4 , off ) ; off += 4;
-	pwrite ( fd,  &numSlotsUsed , 4 , off ) ; off += 4;
-	pwrite ( fd,  &m_ks         , 4 , off ) ; off += 4;
-	pwrite ( fd,  &m_ds         , 4 , off ) ; off += 4;
-	pwrite ( fd,  m_keys , numSlots * m_ks , off ); off += numSlots * m_ks;
-	if ( m_ds ) 
-		pwrite (fd,m_vals,numSlots*m_ds,off); off += numSlots * m_ds;
+	long err;
+
+	err = pwrite ( fd,  &numSlots     , 4 , off ) ; off += 4;
+	if ( err == -1 ) return log("htblx: write error");
+
+	err = pwrite ( fd,  &numSlotsUsed , 4 , off ) ; off += 4;
+	if ( err == -1 ) return log("htblx: write error");
+	
+	err = pwrite ( fd,  &m_ks         , 4 , off ) ; off += 4;
+	if ( err == -1 ) return log("htblx: write error");
+
+	err = pwrite ( fd,  &m_ds         , 4 , off ) ; off += 4;
+	if ( err == -1 ) return log("htblx: write error");
+
+	err = pwrite ( fd,  m_keys , numSlots * m_ks , off ); 
+	off += numSlots * m_ks;
+	if ( err == -1 ) return log("htblx: write error");
+
+
+	if ( m_ds ) {
+		err = pwrite (fd,m_vals,numSlots*m_ds,off); 
+		off += numSlots * m_ds;
+		if ( err == -1 ) return log("htblx: write error");
+	}
+
 	// whether the slot is empty or not!
-	pwrite ( fd,  m_flags , numSlots , off ); off += numSlots ;
+	err = pwrite ( fd,  m_flags , numSlots , off ); off += numSlots ;
+	if ( err == -1 ) return log("htblx: write error");
 
         if ( tbuf ) {
 		// save the text buf size
-		pwrite ( fd,  &tsize        , 4 , off ) ; off += 4;
+		err = pwrite ( fd,  &tsize        , 4 , off ) ; off += 4;
+		if ( err == -1 ) return log("htblx: write error");
 		// save the text buf content
-		pwrite ( fd,  tbuf          , tsize , off ) ; off += tsize;
+		err = pwrite ( fd,  tbuf          , tsize , off ) ; off+=tsize;
+		if ( err == -1 ) return log("htblx: write error");
 	}
 	close ( fd );
 

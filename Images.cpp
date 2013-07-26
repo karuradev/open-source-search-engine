@@ -586,7 +586,7 @@ bool Images::gotImage ( ) {
 			      thumbStartWrapper_r ) ) return false;
 	// threads might be off
 	logf ( LOG_DEBUG, "image: Calling thumbnail gen without thread.");
-	thumbStartWrapper_r ( false , NULL );
+	thumbStartWrapper_r ( NULL , NULL );
 	return true;
 }
 

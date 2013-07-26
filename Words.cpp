@@ -1122,7 +1122,7 @@ long Words::getLanguage( Sections *sections ,
 		// with "ht" before checking this.
 		char cl = getCharacterLanguage ( wptrs[wordi] );
 		if ( cl ) {
-			langCount[cl]++;
+		        langCount[(unsigned char)cl]++;
 			wordi++;
 			continue;
 		}

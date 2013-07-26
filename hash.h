@@ -212,7 +212,6 @@ inline uint64_t hash64Lower_utf8 ( char *p, long len, uint64_t startHash ) {
 	return h;
 }
 
-
 inline uint64_t hash64Lower_utf8_nospaces ( char *p, long len  ) {
 	uint64_t h = 0LL;
 	uint8_t i = 0;

@@ -4347,11 +4347,11 @@ char XmlDoc::computeLangId ( Sections *sections , Words *words, char *lv ) {
 		     is_alnum_a(wptrs[i][wlens[i]+1]) )
 			continue;
 		// /blah or ?blah
-		if ( i>0 && wptrs[i][-1] == '/' ||
-		     i>0 && wptrs[i][-1] == '?'    )
+		if ( (i>0 && wptrs[i][-1] == '/') ||
+		     (i>0 && wptrs[i][-1] == '?')    )
 			continue;
 		// add it up
-		counts[lv[i]]++;
+		counts[(unsigned char)lv[i]]++;
 	}
 
 	// get the majority count
@@ -10297,7 +10297,7 @@ long *XmlDoc::getSiteNumInlinks ( ) {
 	}
 
 	// wait for clock to sync before calling getTimeGlobal
-	char wfts = waitForTimeSync();
+	long wfts = waitForTimeSync();
 	// 0 means error, i guess g_errno should be set, -1 means blocked
 	if ( ! wfts || wfts == -1 ) return (long *)wfts;
 
@@ -13173,7 +13173,9 @@ void XmlDoc::filterStart_r ( bool amThread ) {
 	if ( gbstrlen(cmd) > 2040 ) { char *xx=NULL;*xx=0; }
 
 	// exectue it
-	system ( cmd );
+	int retVal = system ( cmd );
+	if ( retVal == -1 )
+	  log("gb: system(%s) : %s",cmd,mstrerror(g_errno));
 
 	// all done with input file
 	// clean up the binary input file from disk
@@ -24699,7 +24701,9 @@ int gbcompress7 ( unsigned char *dest      ,
 	if ( gbstrlen(cmd) > 2040 ) { char *xx=NULL;*xx=0; }
 
 	// exectue it
-	system ( cmd );
+	int retVal = system ( cmd );
+	if ( retVal == -1 )
+	  log("gb: system(%s) : %s",cmd,mstrerror(g_errno));
 
 	// all done with input file
 	// clean up the binary input file from disk
@@ -34003,7 +34007,8 @@ void XmlDoc::gotMsg3aReplyForFullQuery ( ) {
 	//	//long sh32 = m_msg3a->getSiteHash32(i);
 	//	p += sprintf(p,"d%li=%lli ",i,d);
 	//}
-	log(tmp.getBufStart());
+	char *msg = tmp.getBufStart();
+	log("%s",msg);
 
 	/*
 	// shortcut. pumpSocket() sends the contents of this to m_seoSocket
@@ -35389,7 +35394,7 @@ static int mtCmp ( const void *a, const void *b ) {
 bool XmlDoc::addTermsFromQuery ( char *qstr,
 				 uint8_t queryLangId,
 				 long gigablastTraffic,
-				 long googleTraffic,
+				 long googleTraffic2,
 				 //QueryLogEntry *qe , 
 				 long hackqoff,
 				 SafeBuf *tmpBuf , 
@@ -35448,7 +35453,7 @@ bool XmlDoc::addTermsFromQuery ( char *qstr,
 		// make gb traffic into google monthly traffic
 		traffic *= GB_TRAFFIC_MODIFIER;
 		// ues google numbers if we have them, more accurate
-		long googleTraffic = googleTraffic;
+		long googleTraffic = googleTraffic2;
 		if ( googleTraffic >= 0 ) traffic = googleTraffic;
 
 

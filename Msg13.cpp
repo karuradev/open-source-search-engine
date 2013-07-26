@@ -1639,7 +1639,7 @@ long hasGoodDates ( char *content ,
 		// shortcut
 		datetype_t dt = di->m_hasType;
 		// must be a tod month or dow
-		if ( !(dt & DT_TOD|DT_MONTH|DT_DOW) ) continue;
+		if ( !(dt & (DT_TOD|DT_MONTH|DT_DOW)) ) continue;
 		// get the date's year
 		long diyear = di->m_maxYear;
 		if ( (long)di->m_year <= 0 ) diyear = 0;

@@ -4,16 +4,19 @@ CHECKFORMATSTRING = -D_CHECK_FORMAT_STRING_
 
 DEFS = -D_REENTRANT_ $(CHECKFORMATSTRING) -I.
 
-CPPFLAGS = -g -Wall -pipe -Wno-write-strings
+CPPFLAGS = -g -Wall -pipe -Wno-write-strings -Wstrict-aliasing=0 -Wno-unused-but-set-variable -Wno-uninitialized
 
-LIBFILES= ./libplotter.a ./libstdc++.a ./libgcc.a ./libc.a ./libz.a -lssl -lcrypto -ldl ./libiconv.a ./libm.a
+#LIBFILES= ./libplotter.a ./libstdc++.a  ./libz.a -lssl -lcrypto -ldl ./libiconv.a ./libm.a
 
 # use this for running without valgrind on gk248 or titan
 #LIBS= -L../lib $(LIBFILES)
-LIBS= -L. $(LIBFILES)
+#LIBS= -L. $(LIBFILES)
 
 # use this for valgrind
 #LIBS= $(LIBFILES)
+
+# sputnik (apt-get install libplot-dev openssl-dev)
+LIBS= -lplotter ./libstdc++.a ./libgcc.a ./libc.a ./libz.a -lssl -lcrypto ./libiconv.a ./libm.a
 
 OBJS =  Tfndb.o UdpSlot.o \
 	Msg13.o Mime.o IndexReadInfo.o \
@@ -83,7 +86,7 @@ all: gb
 utils: addtest blaster dump hashtest makeclusterdb makespiderdb membustest monitor seektest urlinfo treetest dnstest dmozparse gbtitletest
 
 gb: $(OBJS) main.o $(LIBFILES)
-	$(CC) $(DEFS) $(CPPFLAGS) -o $@ main.o $(OBJS) -static $(LIBS)
+	$(CC) $(DEFS) $(CPPFLAGS) -o $@ main.o $(OBJS) $(LIBS)
 
 
 iana_charset.cpp: parse_iana_charsets.pl character-sets supported_charsets.txt

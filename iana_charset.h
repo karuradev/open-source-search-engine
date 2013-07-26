@@ -1,5 +1,5 @@
 // iana_charset.h
-// Generated automatically by parse_iana_charsets.pl Sun Jul 21 20:02:48 2013
+// Generated automatically by parse_iana_charsets.pl Fri Jul 26 17:02:13 2013
 // DO NOT EDIT!!!
 
 #ifndef IANA_CHARSET_H__
@@ -21,8 +21,8 @@ enum eIANACharset{
 	csISOTextComm = 14,
 	csHalfWidthKatakana = 15,
 	csJISEncoding = 16,
-	csShiftJIS = 17,
-	csEUCPkdFmtJapanese = 18,
+	csxsjis = 17,
+	csEUCJP = 18,
 	csEUCFixWidJapanese = 19,
 	csISO4UnitedKingdom = 20,
 	csISO11SwedishForNames = 21,
@@ -123,7 +123,7 @@ enum eIANACharset{
 	csUnicode = 1000,
 	csUCS4 = 1001,
 	csUnicodeASCII = 1002,
-	csUnicodeLatin1 = 1003,
+	csISO10646 = 1003,
 	csUnicodeIBM1261 = 1005,
 	csUnicodeIBM1268 = 1006,
 	csUnicodeIBM1276 = 1007,
@@ -242,7 +242,7 @@ enum eIANACharset{
 	csIBM01149 = 2100,
 	csBig5HKSCS = 2101,
 	csIBM1047 = 2102,
-	csPTCP154 = 2103,
+	csCyrillicAsian = 2103,
 	csAmiga1251 = 2104,
 	csKOI7switched = 2105,
 	cswindows1250 = 2250,

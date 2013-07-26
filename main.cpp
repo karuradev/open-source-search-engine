@@ -13802,7 +13802,7 @@ void doInject ( int fd , void *state ) {
 				      reqLen ,
 				      NULL   ,
 				      injectedWrapper ,
-				      99999*60*1000      , // timeout, 60days
+				      9999*60*1000      , // timeout, 60days
 				      -1              , // maxTextDocLen
 				      -1              );// maxOtherDocLen
 	// launch another if blocked

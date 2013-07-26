@@ -4887,7 +4887,7 @@ void PosdbTable::intersectLists10_r ( ) {
 		// point to start
 		char *p = list->m_list;
 		// remember to swap back when done!!
-		char ttt[10];
+		char ttt[12];
 		memcpy ( ttt   , p       , 12 );
 		memcpy ( p     , p + 12 , 6   );
 		memcpy ( p + 6 , ttt     , 12 );
@@ -6518,11 +6518,11 @@ float PosdbTable::getMaxPossibleScore ( QueryTermInfo *qti ,
 
 	// get max score of all sublists
 	float bestHashGroupWeight = -1.0;
-	char bestDensityRank;
+	unsigned char bestDensityRank;
 	char siteRank = -1;
 	char docLang;
 	//char bestWordSpamRank ;
-	char hgrp;
+	unsigned char hgrp;
 	bool hadHalfStopWikiBigram = false;
 	// scan those sublists to set m_ptrs[] and to get the
 	// max possible score of each one

@@ -1799,7 +1799,7 @@ bool Msg40::gotSummary ( ) {
 			       qpop,qpopWeight);
 		msg.safeMemcpy(qt->m_term,qt->m_termLen);
 		msg.pushChar('\0');
-		logf(LOG_DEBUG,msg.getBufStart());
+		logf(LOG_DEBUG,"%s",msg.getBufStart());
 	}
 
 
@@ -2703,7 +2703,7 @@ bool Msg40::computeGigabits( TopicGroup *tg ) {
 						       gj->m_termLen);
 					msg.safePrintf("\"[%.0f]",
 						       gj->m_gbscore);
-					logf(LOG_DEBUG,msg.getBufStart());
+					logf(LOG_DEBUG,"%s",msg.getBufStart());
 				}
 
 				// shorter gets our score (we need to sort)
@@ -2747,7 +2747,7 @@ bool Msg40::computeGigabits( TopicGroup *tg ) {
 						       gj->m_termLen);
 					msg.safePrintf("\"[%.0f]",
 						       gj->m_gbscore);
-					logf(LOG_DEBUG,msg.getBufStart());
+					logf(LOG_DEBUG,"%s",msg.getBufStart());
 				}
 
 				// remove him if we contain him
@@ -3613,7 +3613,7 @@ void hashExcerpt ( Query *q ,
 			       proxScore);
 		msg.safeMemcpy(wp[i],wlen[i]);
 		msg.pushChar(0);
-		logf(LOG_DEBUG,msg.getBufStart());
+		logf(LOG_DEBUG,"%s",msg.getBufStart());
 		
 	}
 
@@ -4117,7 +4117,7 @@ void hashExcerpt ( Query *q ,
 					       minPop);
 				msg.safeMemcpy(gc.m_term,gc.m_termLen);
 				msg.safePrintf("\"");
-				logf(LOG_DEBUG,msg.getBufStart());
+				logf(LOG_DEBUG,"%s",msg.getBufStart());
 			}
 
 

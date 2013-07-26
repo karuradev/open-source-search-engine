@@ -814,11 +814,8 @@ bool Proxy::handleRequest (TcpSocket *s){
 	}
 	*/
 
-	// if we get here that means we've got something to forward.
-	StateControl *stC;
-	try { stC = new (StateControl) ; }
-	// return true and set g_errno if couldn't make a new File class
-	catch ( ... ) { 
+	bool err2 = false;
+	if ( err2 ) {
 	hadError2:
 		g_errno = ENOMEM;
 		log("proxy: new(%i): %s",sizeof(StateControl),
@@ -830,6 +827,14 @@ bool Proxy::handleRequest (TcpSocket *s){
 		st=g_httpServer.sendErrorReply(s,500,mstrerror(g_errno),&bs);
 		g_autoBan.decRequestCount ( ch3 , bs );
 		return s;
+	}
+
+	// if we get here that means we've got something to forward.
+	StateControl *stC;
+	try { stC = new (StateControl) ; }
+	// return true and set g_errno if couldn't make a new File class
+	catch ( ... ) { 
+	  goto hadError2;
 	}
 	mnew ( stC, sizeof(StateControl), "Proxy");
 
@@ -3104,17 +3109,22 @@ bool sendPageAccount ( TcpSocket *s , HttpRequest *hr2 ) {
 		return true; 
 	}
 
+	bool err5 = false;
+	if ( err5 ) {
+	hadError5:
+		g_errno = ENOMEM;
+		log("proxy: new(%i): %s",sizeof(StateUser),mstrerror(g_errno));
+		g_httpServer.sendErrorReply(s,500,mstrerror(g_errno));
+		return true;
+	}
+
 	//
 	// shit, we gotta save state since makeGif can block
 	//
 	StateUser *su;
 	try { su = new (StateUser) ; }
 	catch ( ... ) { 
-	hadError5:
-		g_errno = ENOMEM;
-		log("proxy: new(%i): %s",sizeof(StateUser),mstrerror(g_errno));
-		g_httpServer.sendErrorReply(s,500,mstrerror(g_errno));
-		return true;
+	  goto hadError5;
 	}
 	mnew ( su, sizeof(StateUser), "suprox" );
 

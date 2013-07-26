@@ -254,7 +254,7 @@ public:
 	float m_longitude;
 
 	//void reset() {m_crid = 0; m_adm1[0] = m_adm1[1] = 0;};
-	void reset() {m_adm1Bits = 0;m_adm1[0]=m_adm1[0]=0;};
+        void reset() {m_adm1Bits = 0;m_adm1[0]=0; m_adm1[1]=0;};
 };
 
 

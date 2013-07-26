@@ -199,7 +199,7 @@ retry16:
 	// setup SSL
 	if (m_useSSL) {
 		// init SSL
-		SSL_METHOD *meth = NULL;
+		const SSL_METHOD *meth = NULL;
 		SSL_library_init();
 		SSL_load_error_strings();
 		//SSLeay_add_all_algorithms();

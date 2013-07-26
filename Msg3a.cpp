@@ -294,7 +294,7 @@ bool Msg3a::gotCacheReply ( ) {
 		//	//long sh32 = m_msg3a->getSiteHash32(i);
 		//	p += sprintf(p,"d%li=%lli ",i,d);
 		//}
-		log(tmp);
+		log("%s",tmp);
 		// all done!
 		return true;
 	}

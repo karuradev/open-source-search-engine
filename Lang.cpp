@@ -195,6 +195,9 @@ static char *s_langAbbr[] = {
 	NULL
 };
 
+// fix bug:
+#define csISOLatin6 cslatin6
+
 static unsigned char s_langCharset[] = {
 	csUnknown,csISOLatin1,csISOLatin1,csISOLatin1,//"xx","en","fr","es",
 	csUnknown,csUnknown,csUnknown,csUnknown,//"ru","zz","ja","zh_tw",

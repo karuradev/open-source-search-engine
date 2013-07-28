@@ -4,7 +4,11 @@ CHECKFORMATSTRING = -D_CHECK_FORMAT_STRING_
 
 DEFS = -D_REENTRANT_ $(CHECKFORMATSTRING) -I.
 
-CPPFLAGS = -g -Wall -pipe -Wno-write-strings -Wstrict-aliasing=0 -Wno-unused-but-set-variable -Wno-uninitialized
+# force 32-bit mode using -m32 (apt-get install gcc-multilib to ensure works)
+# and -m32 should use /usr/lib32/ as the library path.
+CPPFLAGS = -m32 -g -Wall -pipe -Wno-write-strings -Wstrict-aliasing=0 -Wno-unused-but-set-variable -Wno-uninitialized
+
+CC=g++
 
 #LIBFILES= ./libplotter.a ./libstdc++.a  ./libz.a -lssl -lcrypto -ldl ./libiconv.a ./libm.a
 
@@ -18,7 +22,8 @@ CPPFLAGS = -g -Wall -pipe -Wno-write-strings -Wstrict-aliasing=0 -Wno-unused-but
 # let's keep the libraries in the repo for easier bug reporting and debugging
 # in general if we can. the includes are still in /usr/include/ however...
 # which is kinda strange but seems to work so far.
-LIBS= -lplotter ./libstdc++.a ./libgcc.a ./libc.a ./libz.a ./libssl.a ./libcrypto.a ./libiconv.a ./libm.a
+#LIBS= ./libplotter.a ./libplot.a ./libstdc++.a ./libgcc.a ./libc.a ./libz.a ./libssl.a ./libcrypto.a ./libiconv.a ./libm.a
+LIBS= -L. ./libplotter.a ./libplot.a ./libz.a ./libssl.a ./libcrypto.a ./libiconv.a ./libm.a ./libstdc++.a
 
 OBJS =  Tfndb.o UdpSlot.o \
 	Msg13.o Mime.o IndexReadInfo.o \
@@ -426,7 +431,7 @@ Msg6a.o:
 
 # Stupid gcc-2.95 stabs debug can't handle such a big file.
 geo_ip_table.o: geo_ip_table.cpp geo_ip_table.h
-	$(CC) $(DEFS) -Wall -pipe -c $*.cpp 
+	$(CC) $(DEFS) -m32 -Wall -pipe -c $*.cpp 
 
 .cpp.o:
 	$(CC) $(DEFS) $(CPPFLAGS) -c $*.cpp 

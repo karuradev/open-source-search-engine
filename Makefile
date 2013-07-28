@@ -23,7 +23,7 @@ CC=g++
 # in general if we can. the includes are still in /usr/include/ however...
 # which is kinda strange but seems to work so far.
 #LIBS= ./libplotter.a ./libplot.a ./libstdc++.a ./libgcc.a ./libc.a ./libz.a ./libssl.a ./libcrypto.a ./libiconv.a ./libm.a
-LIBS= -L. ./libplotter.a ./libplot.a ./libz.a ./libssl.a ./libcrypto.a ./libiconv.a ./libm.a ./libstdc++.a
+LIBS= -L. ./libplotter.a ./libplot.a ./libz.a ./libssl.a ./libcrypto.a ./libiconv.a ./libm.a ./libgcc.a ./libc.a ./libstdc++.a
 
 OBJS =  Tfndb.o UdpSlot.o \
 	Msg13.o Mime.o IndexReadInfo.o \
@@ -284,10 +284,8 @@ seo.o:
 TopTree.o:
 	$(CC) $(DEFS) $(CPPFLAGS) -O3 -c $*.cpp 
 
-# if we make this -O2 then recvfrom() returns -1
-# when it should not!
-#UdpServer.o:
-#	$(CC) $(DEFS) $(CPPFLAGS) -O2 -c $*.cpp 
+UdpServer.o:
+	$(CC) $(DEFS) $(CPPFLAGS) -O2 -c $*.cpp 
 
 RdbList.o:
 	$(CC) $(DEFS) $(CPPFLAGS) -O2 -c $*.cpp 

@@ -67,12 +67,13 @@ static long s_badPid = -1;
 
 #define MAX_PID 32767
 
-static int  s_errno ;
-static int  s_errnos [ MAX_PID + 1 ];
+//static int  s_errno ;
+//static int  s_errnos [ MAX_PID + 1 ];
 
 // this was improvised from linuxthreads/errno.c
 //#define CURRENT_STACK_FRAME  ({ char __csf; &__csf; })
 // WARNING: you MUST compile with -DREENTRANT for this to work
+/*
 int *__errno_location (void) {
 	long pid = (long) getpid();
 	//if ( pid == s_pid ) return &g_errno;
@@ -81,6 +82,7 @@ int *__errno_location (void) {
 	s_badPid = pid;
 	return &s_errno; 
 }
+*/
 
 // this also limit the maximum number of outstanding (live) threads
 #define MAX_STACKS 20
@@ -805,6 +807,8 @@ bool ThreadQueue::timedCleanUp ( long maxNiceness ) {
 		//   set so t->m_pid was a bogus value
 		// . thread may have seg faulted, in which case sigbadhandler()
 		//   in Loop.cpp will get it and set errno to 0x7fffffff
+		/* MDW: i hafta take this out because the errno_location thing
+		   is not working on the newer gcc
 		if ( ! t->m_isDone && t->m_pid >= 0 && 
 		     s_errnos [t->m_pid] == 0x7fffffff ) {
 			log("thread: Got abnormal thread termination. Seems "
@@ -812,6 +816,7 @@ bool ThreadQueue::timedCleanUp ( long maxNiceness ) {
 			s_errnos[t->m_pid] = 0;
 			goto again;
 		}
+		*/
 		// skip if not done yet
 		if ( ! t->m_isDone     ) continue;
 
@@ -1100,6 +1105,8 @@ bool ThreadQueue::cleanUp ( ThreadEntry *tt , long maxNiceness ) {
 		//   set so t->m_pid was a bogus value
 		// . thread may have seg faulted, in which case sigbadhandler()
 		//   in Loop.cpp will get it and set errno to 0x7fffffff
+		/* MDW: i hafta take this out because the errno_location thing
+		   is not working on the newer gcc
 		if ( ! t->m_isDone && t->m_pid >= 0 && 
 		     s_errnos [t->m_pid] == 0x7fffffff ) {
 			log("thread: Got abnormal thread termination. Seems "
@@ -1107,6 +1114,7 @@ bool ThreadQueue::cleanUp ( ThreadEntry *tt , long maxNiceness ) {
 			s_errnos[t->m_pid] = 0;
 			goto again;
 		}
+		*/
 		// skip if not done yet
 		if ( ! t->m_isDone     ) continue;
 

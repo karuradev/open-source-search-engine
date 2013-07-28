@@ -506,7 +506,7 @@ int File::getfd () {
 	// copy errno to g_errno
 	if ( fd == -1 ) {
 		g_errno = errno;
-		log("disk: open(%s) : %s",m_filename,strerror(g_errno));
+		log("disk: error open(%s) : %s",m_filename,strerror(g_errno));
 		return -1;
 	}
 	// we're another open file
@@ -634,7 +634,7 @@ long File::getFileSize ( ) {
         if ( g_errno == EAGAIN ) { g_errno = 0; return 0; }
 
         // log & return -1 on any other error
-        log("disk: getFileSize(%s) : %s", m_filename , strerror(g_errno));
+        log("disk: error getFileSize(%s) : %s",m_filename , strerror(g_errno));
         return -1;
 }
 
@@ -654,7 +654,7 @@ time_t File::getLastModifiedTime ( ) {
 
 	// copy errno to g_errno
 	g_errno = errno;
-	log("disk: stat(%s) : %s", m_filename,strerror(g_errno));
+	log("disk: error stat2(%s) : %s", m_filename,strerror(g_errno));
 	return 0;
 }
 
@@ -676,7 +676,7 @@ long File::doesExist ( ) {
         // resource temporarily unavailable (for newer libc)
         if ( g_errno == EAGAIN ) { g_errno = old_errno; return 0; }
         // log & return -1 on any other error
-        log("disk: stat(%s): %s", m_filename , strerror(g_errno));
+        log("disk: error stat3(%s): %s", m_filename , strerror(g_errno));
         return -1;
 }
 

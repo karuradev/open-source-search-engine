@@ -23,7 +23,7 @@ CC=g++
 # in general if we can. the includes are still in /usr/include/ however...
 # which is kinda strange but seems to work so far.
 #LIBS= ./libplotter.a ./libplot.a ./libstdc++.a ./libgcc.a ./libc.a ./libz.a ./libssl.a ./libcrypto.a ./libiconv.a ./libm.a
-LIBS= -L. ./libplotter.a ./libplot.a ./libz.a ./libssl.a ./libcrypto.a ./libiconv.a ./libm.a ./libstdc++.a
+LIBS= -L. ./libplotter.a ./libplot.a ./libz.a ./libssl.a ./libcrypto.a ./libiconv.a ./libm.a ./libstdc++.a ./libgcc.a ./libc.a
 
 OBJS =  Tfndb.o UdpSlot.o \
 	Msg13.o Mime.o IndexReadInfo.o \

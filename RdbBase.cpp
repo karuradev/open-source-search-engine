@@ -140,10 +140,11 @@ bool RdbBase::init ( char  *dir            ,
 		}
 		// make a special "cat" dir for it if we need to
 		sprintf ( tmp , "%s%s" , dir , dbname );
-		if ( ::mkdir ( tmp ,
+		long status = ::mkdir ( tmp ,
 			       S_IRUSR | S_IWUSR | S_IXUSR | 
 			       S_IRGRP | S_IWGRP | S_IXGRP | 
-			       S_IROTH | S_IXOTH ) == -1 && errno != EEXIST )
+					S_IROTH | S_IXOTH );
+	        if ( status == -1 && errno != EEXIST && errno )
 			return log("db: Failed to make directory %s: %s.",
 				   tmp,mstrerror(errno));
 	}

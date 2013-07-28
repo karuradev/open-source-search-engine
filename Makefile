@@ -6,7 +6,7 @@ DEFS = -D_REENTRANT_ $(CHECKFORMATSTRING) -I.
 
 # force 32-bit mode using -m32 (apt-get install gcc-multilib to ensure works)
 # and -m32 should use /usr/lib32/ as the library path.
-CPPFLAGS = -m32 -g -Wall -pipe -Wno-write-strings -Wstrict-aliasing=0 -Wno-unused-but-set-variable -Wno-uninitialized
+CPPFLAGS = -m32 -g -Wall -pipe -Wno-write-strings -Wstrict-aliasing=0 -Wno-unused-but-set-variable -Wno-uninitialized -static
 
 CC=g++
 

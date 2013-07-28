@@ -284,8 +284,10 @@ seo.o:
 TopTree.o:
 	$(CC) $(DEFS) $(CPPFLAGS) -O3 -c $*.cpp 
 
-UdpServer.o:
-	$(CC) $(DEFS) $(CPPFLAGS) -O3 -c $*.cpp 
+# if we make this -O2 then recvfrom() returns -1
+# when it should not!
+#UdpServer.o:
+#	$(CC) $(DEFS) $(CPPFLAGS) -O2 -c $*.cpp 
 
 RdbList.o:
 	$(CC) $(DEFS) $(CPPFLAGS) -O2 -c $*.cpp 

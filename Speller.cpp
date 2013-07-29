@@ -1383,6 +1383,12 @@ bool Speller::loadUnifiedDict() {
 	if ( m_unifiedDict.save(g_hostdb.m_dir,"unifiedDict-map.dat")<=0 )
 		return false;
 
+	// hmmm... seems like we need to re-run for some reason
+	log("spell: PLEASE RERUN gb");
+	log("spell: PLEASE RERUN gb");
+	log("spell: PLEASE RERUN gb");
+	exit(0);
+
 	return true;
 }
 

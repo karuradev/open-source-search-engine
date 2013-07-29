@@ -2332,21 +2332,22 @@ bool RdbTree::fastSave_r() {
 	// . save the header
 	// . force file head to the 0 byte in case offset was elsewhere
 	long long offset = 0;
-	pwrite ( fd , &m_numNodes       , 4 , offset ); offset += 4;
-	pwrite ( fd , &m_fixedDataSize  , 4 , offset ); offset += 4;
-	pwrite ( fd , &m_numUsedNodes   , 4 , offset ); offset += 4;
-	pwrite ( fd , &m_headNode       , 4 , offset ); offset += 4;
-	pwrite ( fd , &m_nextNode       , 4 , offset ); offset += 4;
-	pwrite ( fd , &m_minUnusedNode  , 4 , offset ); offset += 4;
-	pwrite ( fd , &m_doBalancing   , sizeof(m_doBalancing) , offset );
+	long long br = 0;
+	br += pwrite ( fd , &m_numNodes       , 4 , offset ); offset += 4;
+	br += pwrite ( fd , &m_fixedDataSize  , 4 , offset ); offset += 4;
+	br += pwrite ( fd , &m_numUsedNodes   , 4 , offset ); offset += 4;
+	br += pwrite ( fd , &m_headNode       , 4 , offset ); offset += 4;
+	br += pwrite ( fd , &m_nextNode       , 4 , offset ); offset += 4;
+	br += pwrite ( fd , &m_minUnusedNode  , 4 , offset ); offset += 4;
+	br += pwrite ( fd , &m_doBalancing   , sizeof(m_doBalancing) , offset);
 	offset += sizeof(m_doBalancing);
-	pwrite ( fd , &m_ownData       , sizeof(m_ownData)     , offset );
+	br += pwrite ( fd , &m_ownData       , sizeof(m_ownData)     , offset);
 	offset += sizeof(m_ownData);
 	// bitch on error
-	if ( errno ) {
+	if ( br != offset ) {
 		m_saveErrno = errno;
 		close ( fd );
-		return log("db: Failed to save tree for %s: %s.",
+		return log("db: Failed to save tree1 for %s: %s.",
 			   m_dbname,mstrerror(errno));
 	}
 	// position to store into m_keys, ...
@@ -2360,7 +2361,7 @@ bool RdbTree::fastSave_r() {
 		if ( bytesWritten < 0 ) {
 			close ( fd );
 			m_saveErrno = errno;
-			return log("db: Failed to save tree for %s: %s.",
+			return log("db: Failed to save tree2 for %s: %s.",
 				   m_dbname,mstrerror(errno));
 		}
 		// point to next block to save to
@@ -2395,24 +2396,28 @@ long RdbTree::fastSaveBlock_r ( int fd , long start , long long offset ) {
 	//log("writing block at %lli, %li nodes",
 	//     f->m_currentOffset, n);
 	errno = 0;
+	long long br = 0;
 	// write the block
-	pwrite ( fd , &m_collnums[start], n * sizeof(collnum_t) , offset );
+	br += pwrite ( fd,&m_collnums[start], n * sizeof(collnum_t) , offset );
 	offset += n * sizeof(collnum_t);
-	pwrite ( fd , &m_keys   [start*m_ks] , n * m_ks , offset );
+	br += pwrite ( fd , &m_keys   [start*m_ks] , n * m_ks , offset );
 	offset += n * m_ks;
-	pwrite ( fd , &m_left   [start] , n * 4 , offset ); offset += n * 4;
-	pwrite ( fd , &m_right  [start] , n * 4 , offset ); offset += n * 4;
-	pwrite ( fd , &m_parents[start] , n * 4 , offset ); offset += n * 4;
+	br += pwrite(fd, &m_left   [start] , n * 4 , offset ); offset += n * 4;
+	br += pwrite(fd, &m_right  [start] , n * 4 , offset ); offset += n * 4;
+	br += pwrite(fd, &m_parents[start] , n * 4 , offset ); offset += n * 4;
 	if ( m_doBalancing         ) {
-		pwrite ( fd , &m_depth[start] , n  , offset ); offset += n  ; }
+	  br += pwrite ( fd , &m_depth[start] , n  , offset ); offset += n  ; }
 	if ( m_fixedDataSize == -1 ) {
-		pwrite ( fd , &m_sizes[start] , n*4, offset ); offset += n*4; }
+	  br += pwrite ( fd , &m_sizes[start] , n*4, offset ); offset += n*4; }
 	// if the data is actually stored in the data ptrs, just save those
 	if ( m_dataInPtrs ) {
-		pwrite ( fd , &m_data[start] , n * 4 , offset ); offset +=n*4;}
+		br +=pwrite(fd,&m_data[start],n * 4 , offset ); offset +=n*4;}
 	// bitch on error
-	if ( errno ) return log("db: Failed to save tree for %s: %s.",
-				m_dbname,mstrerror(errno)) - 1;
+	if ( br != offset - oldOffset ) 
+	  return log("db: Failed to save tree3 for %s (%lli!=%lli): %s.",
+				m_dbname,
+		     br,offset,
+		     mstrerror(errno)) - 1;
 
 	// if no data to write then return bytes written this call
 	if ( m_fixedDataSize == 0 || m_dataInPtrs ) return offset - oldOffset ;

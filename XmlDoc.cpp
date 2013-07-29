@@ -6746,6 +6746,16 @@ uint64_t *XmlDoc::getDupHash ( ) {
 IndexList *XmlDoc::getDupList ( ) {
 	if ( m_dupListValid ) return &m_dupList;
 
+	// until we start using posdb and not indexdb, just return an
+	// empty list.
+	// TODO: MDW fix the deduping.
+	m_dupList.reset();
+	m_dupListValid = true;
+	return &m_dupList;
+	//
+	// end temp hack
+	//
+
 	uint64_t *dh = getDupHash ( );
 	if ( ! dh || dh == (uint64_t *)-1 ) return (IndexList *)dh;
 
@@ -20951,7 +20961,7 @@ bool XmlDoc::hashUrl ( HashTableX *tt ) {
 	// xyz.com/foo/     --> 1
 	// xyz.com/foo/boo  --> 1
 	// xyz.com/foo/boo/ --> 2
-	char buf[10];
+	char buf[20];
 	long blen = sprintf(buf,"%li",pathDepth);
 	// update parms
 	hi.m_prefix    = "gbpathdepth";
